@@ -1,0 +1,24 @@
+{
+  "name": "autotap-android",
+  "version": "1.0.0",
+  "description": "Replay your activity with your Android phone automatically.",
+  "main": "index.js",
+  "scripts": {
+    "record": "adb exec-out getevent -t > record",
+    "replay": "node index.js",
+    "loop": "node index.js --loop --sec 2"
+  },
+  "keywords": [
+    "Android",
+    "auto",
+    "tap",
+    "replay"
+  ],
+  "author": "Rickion",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "fs-extra": "^8.1.0",
+    "yargs": "^14.2.0"
+  }
+}
