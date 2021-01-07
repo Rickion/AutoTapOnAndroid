@@ -11,7 +11,13 @@ function writeToLocal(file, data) {
   return fs.writeFile(file, data);
 }
 
+function writeToLocalAppend(file, data) {
+  lgWarn(`Writing file: ${ file }`);
+  return fs.appendFile(file, data);
+}
+
 module.exports = {
   getLocalData,
-  writeToLocal
+  writeToLocal,
+  writeToLocalAppend,
 }

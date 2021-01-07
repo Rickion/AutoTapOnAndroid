@@ -3,41 +3,47 @@ const { file, touchEvent: event } = require('./src/config');
 const { pushReplayFile, replay } = require('./src/adb-cmd');
 const { getLocalData, writeToLocal } = require('./src/manage-data');
 const loopMethod = require('./src/do-loop');
-const { lgSucc } = require('./src/log');
-
+const { lgSucc, lgInfo } = require('./src/log');
+const { parseInt16 }  = require('./src/util');
 const Precision = 1000000;
 const Speed = 1;
+
+lgInfo(`http://adbcommand.com/articles/adb shell：getevent and sendevent/`)
+lgInfo(`Use the -l option to display textual labels for all event codes.`)
+lgInfo(`adb shell -- getevent -lt`)
 
 getLocalData(file.record).then(data => {
   let lines = data.split('\n');
   let time = '';
-  let result = lines.map(line => {
+  let result = lines.map((line, lineIndex) => {
     if (!line || !line.startsWith('[')) {
       return '';
     }
 
-    let items = line.split(' ');
-    let currentTime = items[2].replace(']', '');
+    let items = line.split(' ').filter(i => i);
+    let [_, currentTime, eventIndex, x, y, endNum] = items;
+    currentTime = currentTime.replace(']', '');
+    eventIndex = eventIndex.replace(':', '');
+    x = parseInt16(x);
+    y = parseInt16(y);
+    endNum = parseInt16(endNum);
+    
     let lack = '';
 
     if (currentTime !== time) {
-      time && (lack = (Number(currentTime)*Precision - Number(time)*Precision)%Speed/Precision);
+      time && (lack = (Number(currentTime)*Precision - Number(time)*Precision)/Speed/Precision);
       time = currentTime;
     }
 
-    items[4] = parseInt(items[4], 16);
-    items[5] = parseInt(items[5], 16);
-    items[6] = items[6] === 'ffffffff' ? '-1' : parseInt(items[6], 16);
-
-    let newLine = ['sendevent', event, items[4], items[5], items[6]].join(' ');
-    if (lack) {
-      newLine = [newLine, `sendevent ${event} 0 0 0`,`sleep ${lack};`].join('\n');
+    let newLine = ['sendevent', eventIndex, x, y, endNum].join(' ');
+    if (lack && lines[lineIndex - 4].endsWith('ffffffff')) {
+      newLine = [`sleep ${lack};`, newLine].join('\n');
     }
 
     return newLine;
   }).filter(v => v);
 
-  return result.join('\n').concat('\n');
+  return result.join('\n');
 }).then(formattedData => {
   return writeToLocal(file.replay, formattedData);
 }).then(_ => {

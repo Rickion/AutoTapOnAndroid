@@ -25,4 +25,4 @@ let randomLoop = (method) => {
   }, timeout);
 }
 
-module.exports = randomLoop;
+module.exports = loop;

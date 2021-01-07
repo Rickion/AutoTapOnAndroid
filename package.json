@@ -4,9 +4,9 @@
   "description": "Replay your activity with your Android phone automatically.",
   "main": "index.js",
   "scripts": {
-    "record": "adb exec-out getevent -t > record",
+    "record": "node -e 'require(\"./src/adb-cmd.js\").record()'",
     "replay": "node index.js",
-    "loop": "node index.js --loop --sec 2"
+    "loop": "node index.js --loop --sec 0.5"
   },
   "keywords": [
     "Android",

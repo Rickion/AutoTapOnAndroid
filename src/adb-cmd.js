@@ -1,21 +1,32 @@
-const { execFileSync } = require('child_process');
+const { execFileSync, spawn } = require('child_process');
 const { lgInfo, lgWarn, lgSucc, lgFail } = require('./log');
 const { file } = require('./config');
+const { writeToLocal, writeToLocalAppend } = require('./manage-data');
 
 let record = () => {
   try {
     lgWarn(`Recording...`);
 
-    execFileSync('adb', [
+    const process = spawn('adb', [
       'exec-out',
-      `getevent -t > ${file.record}`,
+      'getevent',
+      '-t',
     ]);
-
-    lgSucc('Record complete');
+    lgSucc('Ctrl + C to EXIT');
+    
+    writeToLocal(file.record, '');
+    process.stdout.on('data', chunk => {
+      writeToLocalAppend(file.record, chunk);
+    })
+    process.stderr.on('data', (e) => {
+      lgFail(e);
+    });
+    
   } catch (e) {
     lgFail(`Record failed.\n ${e}`);
   }
 }
+
 let replay = () => {
   try {
     lgWarn(`Replaying...`);
@@ -29,6 +40,36 @@ let replay = () => {
     lgSucc('Replay complete');
   } catch (e) {
     lgFail(`Replay failed.\n ${e}`);
+  }
+}
+let tapXY = (x = 500, y = 500) => {
+  try {
+    lgWarn(`Taping ➜ ${x}:${y}`);
+
+    execFileSync('adb', [
+      'shell',
+      'input',
+      'tap',
+      x,
+      y,
+    ]);
+
+    lgSucc('Replay complete');
+  } catch (e) {
+    lgFail(`Replay failed.\n ${e}`);
+  }
+}
+let showWMSize =  () => {
+  try {
+    let size = execFileSync('adb', [
+      'shell',
+      'wm',
+      'size',
+    ]);
+
+    lgSucc(size);
+  } catch (e) {
+    lgFail(`Get display size failed.\n ${e}`);
   }
 }
 
@@ -49,5 +90,6 @@ let pushReplayFile = () => {
 module.exports = {
   record,
   replay,
+  tapXY,
   pushReplayFile,
 }
