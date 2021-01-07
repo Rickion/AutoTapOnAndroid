@@ -6,7 +6,8 @@
   "scripts": {
     "record": "node -e 'require(\"./src/adb-cmd.js\").record()'",
     "replay": "node index.js",
-    "loop": "node index.js --loop --sec 0.5"
+    "loop": "node index.js --loop --sec 0.5",
+    "lint": "eslint --fix --ext .js index.js"
   },
   "keywords": [
     "Android",
@@ -20,5 +21,10 @@
     "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.17.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
   }
 }

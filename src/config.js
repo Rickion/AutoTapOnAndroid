@@ -4,4 +4,4 @@ module.exports = {
     record: 'record',
     replay: 'replay',
   },
-}
+};

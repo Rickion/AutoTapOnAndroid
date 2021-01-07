@@ -1,20 +1,21 @@
-let chalk = require('chalk')
+/* eslint-disable no-console */
+const chalk = require('chalk');
 
-let lg = console.log;
+const lg = console.log;
 
-let lgCyan = (...args) => {
+const lgCyan = (...args) => {
   lg(chalk.cyan(...args));
 };
 
-let lgYellow = (...args) => {
+const lgYellow = (...args) => {
   lg(chalk.yellow(...args));
 };
 
-let lgGreen = (...args) => {
+const lgGreen = (...args) => {
   lg(chalk.green(...args));
 };
 
-let lgRed = (...args) => {
+const lgRed = (...args) => {
   lg(chalk.bgRed(...args));
 };
 
@@ -23,4 +24,4 @@ module.exports = {
   lgWarn: lgYellow,
   lgSucc: lgGreen,
   lgFail: lgRed,
-}
+};

@@ -1,11 +1,13 @@
 const { execFileSync, spawn } = require('child_process');
-const { lgInfo, lgWarn, lgSucc, lgFail } = require('./log');
+const {
+  lgInfo, lgWarn, lgSucc, lgFail,
+} = require('./log');
 const { file } = require('./config');
 const { writeToLocal, writeToLocalAppend } = require('./manage-data');
 
-let record = () => {
+const record = () => {
   try {
-    lgWarn(`Recording...`);
+    lgWarn('Recording...');
 
     const process = spawn('adb', [
       'exec-out',
@@ -13,23 +15,22 @@ let record = () => {
       '-t',
     ]);
     lgSucc('Ctrl + C to EXIT');
-    
+
     writeToLocal(file.record, '');
-    process.stdout.on('data', chunk => {
+    process.stdout.on('data', (chunk) => {
       writeToLocalAppend(file.record, chunk);
-    })
+    });
     process.stderr.on('data', (e) => {
       lgFail(e);
     });
-    
   } catch (e) {
     lgFail(`Record failed.\n ${e}`);
   }
-}
+};
 
-let replay = () => {
+const replay = () => {
   try {
-    lgWarn(`Replaying...`);
+    lgWarn('Replaying...');
 
     execFileSync('adb', [
       'shell',
@@ -41,8 +42,9 @@ let replay = () => {
   } catch (e) {
     lgFail(`Replay failed.\n ${e}`);
   }
-}
-let tapXY = (x = 500, y = 500) => {
+};
+
+const tapXY = (x = 500, y = 500) => {
   try {
     lgWarn(`Taping ➜ ${x}:${y}`);
 
@@ -58,10 +60,11 @@ let tapXY = (x = 500, y = 500) => {
   } catch (e) {
     lgFail(`Replay failed.\n ${e}`);
   }
-}
-let showWMSize =  () => {
+};
+
+const showWMSize = () => {
   try {
-    let size = execFileSync('adb', [
+    const size = execFileSync('adb', [
       'shell',
       'wm',
       'size',
@@ -71,11 +74,11 @@ let showWMSize =  () => {
   } catch (e) {
     lgFail(`Get display size failed.\n ${e}`);
   }
-}
+};
 
-let pushReplayFile = () => {
+const pushReplayFile = () => {
   try {
-    let result = execFileSync('adb', [
+    const result = execFileSync('adb', [
       'push',
       `${file.replay}`,
       '/sdcard/autoRun',
@@ -85,11 +88,12 @@ let pushReplayFile = () => {
   } catch (e) {
     lgFail(`Push file failed.\n ${e}`);
   }
-}
+};
 
 module.exports = {
   record,
   replay,
   tapXY,
   pushReplayFile,
-}
+  showWMSize,
+};

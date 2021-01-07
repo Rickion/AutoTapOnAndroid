@@ -6,7 +6,7 @@ Plugin your device, and make sure `adb devices` command runs good.
 1. `npm run record`
 1. Make some action on your device, ie: tap, press buttons
 1. Ctrl + C to end
-1. `npm run replay`
+1. `npm run replay` or `npm run loop`
 1. 🎉
 
 ## Known issues
