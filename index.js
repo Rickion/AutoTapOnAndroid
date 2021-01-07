@@ -8,10 +8,6 @@ const { parseInt16 }  = require('./src/util');
 const Precision = 1000000;
 const Speed = 1;
 
-lgInfo(`http://adbcommand.com/articles/adb shell：getevent and sendevent/`)
-lgInfo(`Use the -l option to display textual labels for all event codes.`)
-lgInfo(`adb shell -- getevent -lt`)
-
 getLocalData(file.record).then(data => {
   let lines = data.split('\n');
   let time = '';
